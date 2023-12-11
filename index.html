@@ -119,11 +119,16 @@
         [data-state="reveal"] .side-back {
             transform: rotateX(180deg);
         }
+
+        .snow {
+            fill: #fff;
+            filter: blur(1px);
+        }
     </style>
 </head>
 <body class="center">
     <figure class="card">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" id="svg5" width="21em" height="29.7em" version="1.1" viewBox="0 0 210 297">
+        <svg id="winter_scene" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" id="svg5" width="21em" height="29.7em" version="1.1" viewBox="0 0 210 297">
             <defs id="defs2">
                 <linearGradient id="linearGradient9615">
                     <stop id="stop9611" offset="0" style="stop-color:#800033;stop-opacity:1"/>
@@ -209,6 +214,7 @@
                     <path id="path4469" d="m112.592 126.306 1.942-1.02 1.717 6.122-2.165.597z" class="beltstrap"/>
                 </g>
             </g>
+            <g id="snow"></g>
         </svg>
         <figcaption>
             <h1>Merry Cristmas Cody!</h1>
@@ -221,6 +227,9 @@
         </figcaption>
     </figure>
     <script type="module">
+
+        import { SVG, Element as SVGElement} from "https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.0/svg.esm.min.js"
+
         const revealBtn = document.querySelector("[data-action='reveal']")
         revealBtn.addEventListener("click", function reveal() {
             const reveal = this.querySelector("[data-reveal]");
@@ -230,6 +239,29 @@
             }
             this.dataset.state = "reveal"
         });
+
+        const draw = SVG("#winter_scene").find('#snow');
+        const randomIntegerInRange = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+  const randomInRange = (min, max) =>
+  Math.random() * (max - min) + min;
+        const flakes = [];
+        const maxFlakes = 50;
+        const sceneHeight = 297;
+        const sceneWidth = 210;
+        for (let i = 0; i < maxFlakes; i++) {
+            const dist = randomInRange(0.1, 0.9);
+            flakes.push(draw.circle(2).radius(2 * dist).cy(randomIntegerInRange(0,sceneHeight)).cx(randomIntegerInRange(0,sceneWidth)).addClass('snow').attr('data-dist', dist));
+        }
+        function winterScene () {
+            requestAnimationFrame(winterScene);
+            for (const flake of flakes) {
+                flake.cy(flake.cy()[0] + flake.attr('data-dist')[0]);
+                if(flake.cy()[0] > sceneHeight) flake.cy(-1);
+            }
+        }
+
+        winterScene();
     </script>
 </body>
 </html>
